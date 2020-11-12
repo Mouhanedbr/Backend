@@ -191,7 +191,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   //const message = `Forgot your password? Send a Patch request with your new password and passwordConfirm to ${resetURL}.
    //If you didn't forget your password, please ignore this email.`;
-const url = '';
+
   try {
     await new Email(user, resetURL).sendPasswordReset();
     res.status(200).json({
@@ -232,22 +232,24 @@ exports.forgotPasswordAdvisor = catchAsync(async (req, res, next) => {
 
   try {
     await new Email(advisor, resetURL).sendPasswordReset();
+    
     res.status(200).json({
       status: 'success',
       message: 'Token sent to email address',
     });
   } catch (err) {
-    //console.log(err);
+    console.log(err);
     advisor.passwordResetToken = undefined;
     advisor.passwordResetExpires = undefined;
     await advisor.save({ validateBeforeSave: false });
-
+    
     return next(
       new AppError(
         'There was an error sending the email. Please try again later'
       ),
       500
     );
+    console.log(err);
   }
 });
 
